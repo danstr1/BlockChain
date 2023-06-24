@@ -4,23 +4,40 @@ class Node:
         self.process_time = process_time
         self.neighbors = []
         self.sending_time = sending_time
-        self.current_blocks = []
+        self.current_blocks = {}
+
+    def get_all_neighbors_ids(self, ids, timer):
+        if timer > 5:
+            return
+        for child in self.neighbors:
+            if child.id not in ids:
+                ids.append(child.id)
+            child.get_all_neighbors_ids(ids, timer + 1)
 
     def add_neighbor(self, neighbor):
         self.neighbors.append(neighbor)
 
     def check_if_block_exist(self, block_id):
-        return self.current_blocks.get(block_id, None) is not None
+        return bool(self.current_blocks.get(block_id, None))
 
-    def send_block(self, neighbor, block_id):
-        total_time = self.sending_time + neighbor.sending_time
+    def send_inv(self, neighbor):
+        sending_time = self.sending_time
+        total_time = sending_time + neighbor.sending_time
+        return total_time / 3 # assumption that inv is 1/3 size of a block
+
+    def send_block(self, neighbor, block_id, is_parallel):
+        # print(f"sending block {self.id} -> {neighbor.id}")
+        sending_time = self.sending_time
+        if is_parallel:
+            sending_time *= len(neighbor.neighbors)
+        total_time = sending_time + neighbor.sending_time
         #INV + get_data
-        if neighbor.check_if_block_exist(block_id):
-            print(f"block id: {block_id} already exists at {neighbor}")
-            return total_time
+        # if neighbor.check_if_block_exist(block_id):
+        #     print(f"block id: {block_id} already exists at {neighbor.id}")
+        #     return total_time
         # Transaction
-        total_time += self.sending_time
-        total_time += neighbor.process_time
+        total_time += sending_time
+        neighbor.current_blocks[block_id] = block_id
         return total_time
 
     def print_neighbors(self):
