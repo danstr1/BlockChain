@@ -12,11 +12,12 @@ def main():
                            process_time=6,
                            sending_time=2,
                            routing_mode='SERIAL')
-    net3 = Network.Network(nodes_number=6000,
-                           neighbor_per_node=6,
+    net3 = Network.Network(nodes_number=8000,
+                           neighbor_per_node=4,
                            process_time=6,
                            sending_time=2,
-                           routing_mode='SERIAL')
+                           routing_mode='SERIAL',
+                           propagation_delay=2)
     net1.create_network()
     net2.create_network()
     print("Net1:")
@@ -40,7 +41,7 @@ def main():
     x_serial, y_serial = net3.get_number_of_nodes_per_time()
     net3.propagate_block_parallel_wrap()
     x_par, y_par = net3.get_number_of_nodes_per_time()
-    create_graphs.create_two_graph("Number of propagated nodes by time", x_serial, y_serial, x_par, y_par)
+    create_graphs.create_two_graph("# propagated nodes by time", x_serial, y_serial, x_par, y_par, net3.nodes_number)
     # create_graphs.create_graph_number_of_node_per_time(net3, 'number_of_node_per_time_net3_parallel')
 
 
