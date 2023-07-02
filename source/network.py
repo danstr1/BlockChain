@@ -77,12 +77,20 @@ class Network:
         node = self.all_nodes[0]
         self.propagate_block_serial(node, 0, 0)
         self.fix_propogate_node()
+        for time in self.propagate_node_by_time:
+            if len(self.propagate_node_by_time[time]) >= self.nodes_number*0.85:
+                return time, self.propagate_node_by_time[time]
+        return 0, None
 
     def propagate_block_parallel_wrap(self):
         self.propagate_node_by_time = defaultdict(list)
         node = self.all_nodes[0]
         self.propagate_block_parallel(node, 0, 0)
         self.fix_propogate_node()
+        for time in self.propagate_node_by_time:
+            if len(self.propagate_node_by_time[time]) >= self.nodes_number*0.85:
+                return time, self.propagate_node_by_time[time]
+        return 0, None
 
     def get_time_node_inserted(self, node):
         for time in self.propagate_node_by_time:
@@ -111,7 +119,7 @@ class Network:
         #         all_get_msg = False
         # if all_get_msg:
         #     return
-        if max_depth > 7:
+        if max_depth > 8:
             return
         current_time += node.process_time
         if node not in self.propagate_node_by_time[current_time]:
@@ -136,7 +144,7 @@ class Network:
         #         all_get_msg = False
         # if all_get_msg:
         #     return
-        if max_depth > 7:
+        if max_depth > 8:
             return
         current_time += node.process_time
         if node not in self.propagate_node_by_time[current_time]:

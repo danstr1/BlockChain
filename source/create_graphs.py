@@ -26,15 +26,16 @@ def create_graph_neighbors(network, file_name):
     plt.show()
 
 
-def create_two_graph(title, x_serial, y_serial, x_par, y_par, top):
+def create_two_graph(title, x_serial, y_serial, x_par, y_par, top, y_title, x_title):
     fig, ax = plt.subplots(figsize=(15, 5))
     ax.plot(x_serial, y_serial, linestyle='--', marker='.')
     ax.plot(x_par, y_par, linestyle='--', marker='o')
-    # plt.ylim(top=top)
+    if top:
+        plt.ylim(top=top)
     plt.grid(visible=True)
     # Add labels and title
-    ax.set_xlabel('Time')
-    ax.set_ylabel('# nodes get the block')
+    ax.set_xlabel(x_title)
+    ax.set_ylabel(y_title)
     ax.set_title(title)
     ax.legend(['Serial propagation', 'Parallel propagation'])
 
